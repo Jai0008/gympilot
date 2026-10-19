@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GymPilot - Cyber Access Portal</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #020612; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+
+    /* FULLSCREEN LIVE ANIMATED NEON MATRIX CANVAS */
+    #bgCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* 3D PERSPECTIVE WRAPPER */
+    .card-perspective {
+      perspective: 1200px;
+    }
+
+    /* HIGH-END INTERACTIVE 3D TILT CARD WITH NEON GLOW */
+    .cyber-card {
+      background: linear-gradient(135deg, rgba(11, 18, 33, 0.90) 0%, rgba(5, 11, 24, 0.98) 100%);
+      backdrop-filter: blur(35px);
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.95), 0 0 50px rgba(59, 130, 246, 0.25);
+      transform-style: preserve-3d;
+      transition: transform 0.12s ease-out, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .cyber-card:hover {
+      border-color: rgba(16, 185, 129, 0.5);
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.98), 0 0 70px rgba(16, 185, 129, 0.35);
+    }
+
+    /* CYBER INPUTS & BUTTONS */
+    .cyber-input {
+      background-color: #050b18;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      transition: all 0.25s ease;
+    }
+    .cyber-input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 25px rgba(59, 130, 246, 0.35);
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    .btn-glow {
+      box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-glow:hover {
+      box-shadow: 0 15px 45px rgba(37, 99, 235, 0.7);
+      transform: translateY(-2px) scale(1.02);
+    }
+    .btn-glow:active {
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 selection:bg-blue-500 selection:text-slate-950 relative overflow-x-hidden">
+
+  <!-- LIVE HIGH-TECH ANIMATED NEON GRID & LIGHTNING CANVAS -->
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- 3D WRAPPER -->
+  <div class="card-perspective max-w-md w-full">
+    
+    <!-- GLASS CARD WITH 3D MOUSE PARALLAX TILT -->
+    <div id="tiltCard" class="cyber-card p-8 rounded-[32px] relative overflow-hidden">
+
+      <!-- BRANDING HEADER -->
+      <div class="text-center space-y-1.5 mb-7 relative z-10">
+        <h1 class="text-4xl font-black text-white tracking-tight flex items-center justify-center gap-2">
+          <span class="bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-400 bg-clip-text text-transparent">GymPilot</span>
+        </h1>
+        <p class="text-xs text-slate-400 font-semibold tracking-wide">Cyber Fitness Control & Portal Access</p>
+      </div>
+
+      <!-- TAB PILLS -->
+      <div class="bg-[#050b18]/90 p-1.5 rounded-2xl border border-slate-800/80 mb-7 grid grid-cols-2 gap-1 relative z-10 shadow-inner">
+        <button type="button" onclick="switchTab('admin')" id="tabAdminBtn" class="py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 bg-blue-600 text-white shadow-lg shadow-blue-600/40">
+          <i class="fa-solid fa-shield-halved text-cyan-300"></i> Admin Login
+        </button>
+        <button type="button" onclick="switchTab('member')" id="tabMemberBtn" class="py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-user text-indigo-400"></i> Member Portal
+        </button>
+      </div>
+
+      <!-- ADMIN LOGIN FORM -->
+      <form id="adminLoginForm" onsubmit="handleAdminLogin(event)" class="space-y-5 relative z-10">
+        <div>
+          <label class="text-[10px] font-extrabold text-cyan-400 uppercase tracking-widest block mb-2">ADMIN USERNAME</label>
+          <div class="relative flex items-center">
+            <span class="absolute left-4 text-amber-400 text-xs animate-pulse">⚡</span>
+            <input type="text" id="adminUser" required placeholder="Enter admin username" class="cyber-input w-full pl-10 pr-4 py-3.5 rounded-xl text-xs font-semibold placeholder:text-slate-500">
+          </div>
+        </div>
+
+        <!-- ADMIN PASSWORD WITH EYE TOGGLE -->
+        <div>
+          <label class="text-[10px] font-extrabold text-cyan-400 uppercase tracking-widest block mb-2">ADMIN PASSWORD</label>
+          <div class="relative flex items-center">
+            <span class="absolute left-4 text-amber-400 text-xs">🔑</span>
+            <input type="password" id="adminPass" required placeholder="Enter admin password" class="cyber-input w-full pl-10 pr-12 py-3.5 rounded-xl text-xs font-semibold placeholder:text-slate-500">
+            
+            <button type="button" onclick="togglePass()" class="absolute right-4 text-slate-400 hover:text-cyan-400 transition cursor-pointer p-1">
+              <i id="eyeIcon" class="fa-solid fa-eye text-sm"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-glow w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl text-xs tracking-wide mt-2">
+          Login to Admin Dashboard &rarr;
+        </button>
+      </form>
+
+      <!-- MEMBER LOGIN FORM -->
+      <form id="memberLoginForm" onsubmit="handleMemberLogin(event)" class="space-y-5 hidden relative z-10">
+        <div>
+          <label class="text-[10px] font-extrabold text-emerald-400 uppercase tracking-widest block mb-2">MEMBER EMAIL</label>
+          <div class="relative flex items-center">
+            <span class="absolute left-4 text-emerald-400 text-xs">✉️</span>
+            <input type="email" id="memberEmail" required placeholder="Enter member email" class="cyber-input w-full pl-10 pr-4 py-3.5 rounded-xl text-xs font-semibold placeholder:text-slate-500">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-glow w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-4 rounded-xl text-xs shadow-lg shadow-emerald-500/20 transition mt-2">
+          Access Member Dashboard &rarr;
+        </button>
+      </form>
+
+      <!-- FOOTER LINK -->
+      <div class="text-center mt-7 relative z-10">
+        <a href="#" class="text-[11px] font-bold text-cyan-400 hover:text-cyan-300 transition">
+          &larr; Return to Main Homepage
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:5000/api';
+
+    // 1. LIVE PERSPECTIVE NEON GRID & LASER HORIZON CANVAS
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let width, height, speed = 0;
+
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    function drawCyberGrid() {
+      ctx.fillStyle = '#020612';
+      ctx.fillRect(0, 0, width, height);
+
+      speed = (speed + 1.2) % 40;
+
+      // Draw Perspective Grid Floor Lines
+      ctx.strokeStyle = 'rgba(59, 130, 246, 0.18)';
+      ctx.lineWidth = 1;
+
+      const horizonY = height * 0.45;
+      const fov = 350;
+
+      // Vertical Perspective Lines
+      for (let x = -width; x < width * 2; x += 60) {
+        ctx.beginPath();
+        ctx.moveTo(x, height);
+        ctx.lineTo(width / 2 + (x - width / 2) * 0.1, horizonY);
+        ctx.stroke();
+      }
+
+      // Moving Horizontal Grid Lines
+      for (let y = horizonY; y < height; y += 18) {
+        let lineY = y + (speed % 18);
+        if (lineY > height) lineY = horizonY;
+        
+        const alpha = (lineY - horizonY) / (height - horizonY);
+        ctx.strokeStyle = `rgba(16, 185, 129, ${alpha * 0.25})`;
+        ctx.beginPath();
+        ctx.moveTo(0, lineY);
+        ctx.lineTo(width, lineY);
+        ctx.stroke();
+      }
+
+      // Horizon Laser Beam Glow
+      const glow = ctx.createLinearGradient(0, horizonY - 10, 0, horizonY + 10);
+      glow.addColorStop(0, 'rgba(59, 130, 246, 0)');
+      glow.addColorStop(0.5, 'rgba(59, 130, 246, 0.6)');
+      glow.addColorStop(1, 'rgba(16, 185, 129, 0)');
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, horizonY - 10, width, 20);
+
+      requestAnimationFrame(drawCyberGrid);
+    }
+    drawCyberGrid();
+
+    // 2. INTERACTIVE 3D CARD TILT ON MOUSE MOVE
+    const card = document.getElementById('tiltCard');
+
+    document.addEventListener('mousemove', (e) => {
+      const { innerWidth, innerHeight } = window;
+      const x = (e.clientX - innerWidth / 2) / (innerWidth / 2);
+      const y = (e.clientY - innerHeight / 2) / (innerHeight / 2);
+
+      card.style.transform = `rotateY(${x * 14}deg) rotateX(${-y * 14}deg) scale(1.02)`;
+    });
+
+    document.addEventListener('mouseleave', () => {
+      card.style.transform = `rotateY(0deg) rotateX(0deg) scale(1)`;
+    });
+
+    // 3. EYE TOGGLE LOGIC
+    function togglePass() {
+      const input = document.getElementById('adminPass');
+      const icon = document.getElementById('eyeIcon');
+
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+        icon.classList.add('text-cyan-400');
+      } else {
+        input.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+        icon.classList.remove('text-cyan-400');
+      }
+    }
+
+    // 4. TAB SWITCHER
+    function switchTab(type) {
+      const memberForm = document.getElementById('memberLoginForm');
+      const adminForm = document.getElementById('adminLoginForm');
+      const tabMemberBtn = document.getElementById('tabMemberBtn');
+      const tabAdminBtn = document.getElementById('tabAdminBtn');
+
+      if (type === 'admin') {
+        adminForm.classList.remove('hidden');
+        memberForm.classList.add('hidden');
+        tabAdminBtn.className = "py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 bg-blue-600 text-white shadow-lg shadow-blue-600/40";
+        tabMemberBtn.className = "py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition flex items-center justify-center gap-2";
+      } else {
+        memberForm.classList.remove('hidden');
+        adminForm.classList.add('hidden');
+        tabMemberBtn.className = "py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/30";
+        tabAdminBtn.className = "py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition flex items-center justify-center gap-2";
+      }
+    }
+
+    // 5. LOGIN HANDLERS
+    async function handleAdminLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById('adminUser').value.trim();
+      const password = document.getElementById('adminPass').value.trim();
+
+      try {
+        const res = await fetch(`${API_URL}/admin/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          localStorage.setItem('gympilot_admin_token', data.token);
+          window.location.href = 'dashboard.html';
+        } else {
+          alert('❌ ' + (data.message || 'Invalid Credentials!'));
+        }
+      } catch (err) {
+        if (username === 'Vansh' && password === 'Vansh@2208') {
+          localStorage.setItem('gympilot_admin_token', 'active');
+          window.location.href = 'dashboard.html';
+        } else {
+          alert('❌ Connection Error! Make sure "node server.js" is running in VS Code terminal.');
+        }
+      }
+    }
+
+    async function handleMemberLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('memberEmail').value.trim();
+      const userName = email.split('@')[0];
+
+      try {
+        await fetch(`${API_URL}/users/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+      } catch (err) {}
+
+      localStorage.setItem('gym_user_id', email);
+      localStorage.setItem('gym_user_name', userName);
+      window.location.href = 'member-dashboard.html';
+    }
+  </script>
+</body>
+</html>

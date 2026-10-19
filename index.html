@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymPilot - Gym Management System</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- html2pdf Library CDN for Instant PDF Invoice Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+    <header class="navbar">
+        <div class="logo">
+            Gym<span>Pilot</span>
+        </div>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </nav>
+        <button class="login-btn" onclick="window.location.href='login.html'">
+            Login
+        </button>
+    </header>
+
+    <!-- ================= MAIN ================= -->
+    <main>
+
+        <!-- ================= HERO ================= -->
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <p class="tagline">● START GYM MANAGEMENT</p>
+                <h1>Manage your Gym <span>Build Stronger</span></h1>
+                <p class="hero-text">
+                    A modern gym management system to manage members, trainers, workouts, memberships and business growth.
+                </p>
+                <div class="hero-buttons">
+                    <button class="primary-btn" onclick="window.location.href='login.html'">
+                        Get Started <span>→</span>
+                    </button>
+                    <button class="secondary-btn" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">
+                        Explore Features <span>→</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ================= DASHBOARD CARD ================= -->
+            <div class="hero-card">
+                <div class="card-header">
+                    <h3>Today's Overview</h3>
+                    <span class="live">● Live</span>
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-icon">👥</div>
+                        <h2 id="totalMembersCount">...</h2>
+                        <p>Members</p>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-icon purple">🏋️</div>
+                        <h2 id="totalTrainersCount">...</h2>
+                        <p>Trainers</p>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-icon green">₹</div>
+                        <h2 id="todayCheckinsCount">...</h2>
+                        <p>Checked-In Today</p>
+                    </div>
+                </div>
+                <div class="membership">
+                    <div class="membership-heading">
+                        <span>Membership Status</span>
+                        <strong id="activeRatioPercent">100%</strong>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar" id="progressBarFill" style="width: 100%;"></div>
+                    </div>
+                    <div class="membership-bottom">
+                        <span>Active Memberships</span>
+                        <strong id="activeMembersText">Loading...</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= FEATURES ================= -->
+        <section class="features" id="features">
+            <div class="section-heading">
+                <span class="section-tag">POWERFUL FEATURES</span>
+                <h2>Everything you need to <span>run your gym.</span></h2>
+                <p>GymPilot brings your gym operations, members, trainers and business insights into one powerful system.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon blue">👥</div>
+                    <h3>Member Management</h3>
+                    <p>Add, update and manage gym members from one centralized dashboard.</p>
+                    <a href="#contact">Explore →</a>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon purple">🏋️</div>
+                    <h3>Trainer Management</h3>
+                    <p>Manage trainers, assign members and keep track of trainer responsibilities.</p>
+                    <a href="#contact">Explore →</a>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon blue">📈</div>
+                    <h3>Progress Tracking</h3>
+                    <p>Track member progress, goals and fitness improvements over time.</p>
+                    <a href="#contact">Explore →</a>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon orange">📅</div>
+                    <h3>Workout History</h3>
+                    <p>Maintain workout records and help members stay consistent with training.</p>
+                    <a href="#contact">Explore →</a>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon cyan">💳</div>
+                    <h3>Membership Management</h3>
+                    <p>Monitor active memberships, expiry dates and upcoming renewals.</p>
+                    <a href="#contact">Explore →</a>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon yellow">💰</div>
+                    <h3>Revenue Dashboard</h3>
+                    <p>Understand your gym's revenue, memberships and business growth.</p>
+                    <a href="#contact">Explore →</a>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon green">✅</div>
+                    <h3>Attendance Tracking</h3>
+                    <p>Track daily member attendance and monitor gym activity efficiently.</p>
+                    <a href="#contact">Explore →</a>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon purple">🔔</div>
+                    <h3>Smart Notifications</h3>
+                    <p>Get reminders for membership expiry, payments and upcoming renewals.</p>
+                    <a href="#contact">Explore →</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= ABOUT ================= -->
+        <section class="about" id="about">
+            <div class="about-container">
+                <div class="about-content">
+                    <span class="section-tag">ABOUT GYMPILOT</span>
+                    <h2>Built for <span>smarter gyms.</span></h2>
+                    <p>GymPilot is a modern gym management system designed to simplify everyday gym operations.</p>
+                    <p>It helps gym owners manage members, trainers, memberships, workouts and business performance from one platform.</p>
+
+                    <div class="about-points">
+                        <div class="about-point">
+                            <span>✓</span>
+                            <div>
+                                <h3>Simple Management</h3>
+                                <p>Manage your entire gym from one centralized system.</p>
+                            </div>
+                        </div>
+                        <div class="about-point">
+                            <span>✓</span>
+                            <div>
+                                <h3>Secure & Organized</h3>
+                                <p>Keep member and business information structured and accessible.</p>
+                            </div>
+                        </div>
+                        <div class="about-point">
+                            <span>✓</span>
+                            <div>
+                                <h3>Business Insights</h3>
+                                <p>Monitor memberships, payments and gym performance.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="about-card">
+                    <div class="about-card-icon">💪</div>
+                    <h3>Manage Better.</h3>
+                    <h3><span>Grow Stronger.</span></h3>
+                    <p>Everything your gym needs to operate smarter and grow faster.</p>
+                    <div class="about-stats">
+                        <div>
+                            <strong>01</strong>
+                            <span>Smart Management</span>
+                        </div>
+                        <div>
+                            <strong>02</strong>
+                            <span>Secure Data</span>
+                        </div>
+                        <div>
+                            <strong>03</strong>
+                            <span>Real-time Insights</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= CONTACT ================= -->
+        <section class="contact" id="contact">
+            <div class="contact-container">
+                <div class="contact-info">
+                    <span class="section-tag">GET IN TOUCH</span>
+                    <h2>Let's build a <span>stronger gym.</span></h2>
+                    <p>Have questions about GymPilot or want to learn more about the system? Get in touch with us.</p>
+
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <div class="contact-icon">✉</div>
+                            <div>
+                                <span>Email</span>
+                                <strong>support@gympilot.com</strong>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">☎</div>
+                            <div>
+                                <span>Phone</span>
+                                <strong>+91 9990607101</strong>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">📍</div>
+                            <div>
+                                <span>Location</span>
+                                <strong>Greater Noida, India</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTACT / REGISTER FORM -->
+                <div class="contact-form">
+                    <h3>Send us a message / Register</h3>
+                    <form id="registerForm" onsubmit="registerUser(event)">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" placeholder="Enter your name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" placeholder="Enter your email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" placeholder="Enter phone number">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="plan">Select Membership Plan</label>
+                            <select id="plan">
+                                <option value="1 Month">1 Month Plan</option>
+                                <option value="3 Months">3 Months Plan</option>
+                                <option value="1 Year">1 Year Plan</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="primary-btn">
+                            Send Message & Register →
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= FINAL CTA ================= -->
+        <section class="cta">
+            <div class="section-heading">
+                <span class="section-tag">GET STARTED</span>
+                <h2>Ready to manage your <span>gym smarter?</span></h2>
+                <p>Take control of your gym operations with GymPilot.</p>
+                <button class="primary-btn contact-btn" onclick="window.location.href='login.html'">
+                    Get Started →
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="logo">
+                Gym<span>Pilot</span>
+            </div>
+            <p>© 2026 GymPilot. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#home">Home</a>
+                <a href="#features">Features</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- INLINE JAVASCRIPT FOR REAL-TIME STATS & PDF INVOICE GENERATION -->
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+
+        // Load Real-time Stats from Backend
+        async function fetchHeroStats() {
+            try {
+                const [usersRes, trainersRes, checkinRes] = await Promise.all([
+                    fetch(`${API_URL}/users`),
+                    fetch(`${API_URL}/trainers`),
+                    fetch(`${API_URL}/attendance/today`)
+                ]);
+
+                const usersData = await usersRes.json();
+                const trainersData = await trainersRes.json();
+                const checkinData = await checkinRes.json();
+
+                if (usersData.success) {
+                    const totalUsers = usersData.data.length;
+                    const today = new Date().toISOString().split('T')[0];
+                    const activeUsers = usersData.data.filter(u => !u.expiry_date || u.expiry_date >= today).length;
+
+                    document.getElementById('totalMembersCount').innerText = totalUsers;
+                    document.getElementById('activeMembersText').innerText = `${activeUsers} / ${totalUsers}`;
+                    
+                    const ratio = totalUsers > 0 ? Math.round((activeUsers / totalUsers) * 100) : 100;
+                    document.getElementById('activeRatioPercent').innerText = `${ratio}%`;
+                    document.getElementById('progressBarFill').style.width = `${ratio}%`;
+                }
+
+                if (trainersData.success) {
+                    document.getElementById('totalTrainersCount').innerText = trainersData.data.length;
+                }
+
+                if (checkinData.success) {
+                    document.getElementById('todayCheckinsCount').innerText = checkinData.count;
+                }
+            } catch (err) {
+                console.log('Backend not connected yet. Showing defaults.');
+                document.getElementById('totalMembersCount').innerText = '0';
+                document.getElementById('totalTrainersCount').innerText = '0';
+                document.getElementById('todayCheckinsCount').innerText = '0';
+            }
+        }
+
+        // Auto Registration + PDF Invoice Download Handler
+        async function registerUser(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const plan = document.getElementById('plan').value;
+
+            try {
+                const res = await fetch(`${API_URL}/users/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, phone, plan })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    alert('🎉 Registration Successful! Generating your Invoice PDF...');
+
+                    // Generate Client Invoice PDF
+                    const invoiceElement = document.createElement('div');
+                    invoiceElement.style.padding = '30px';
+                    invoiceElement.style.background = '#0f172a';
+                    invoiceElement.style.color = '#fff';
+                    invoiceElement.style.fontFamily = 'Arial, sans-serif';
+                    invoiceElement.innerHTML = `
+                        <h2 style="color: #34d399; margin-bottom: 5px;">GymPilot - Membership Receipt</h2>
+                        <p style="color: #94a3b8; font-size: 12px;">Date: ${new Date().toLocaleDateString()}</p>
+                        <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+                        <p><strong>Member Name:</strong> ${name}</p>
+                        <p><strong>Email:</strong> ${email}</p>
+                        <p><strong>Phone:</strong> ${phone || 'N/A'}</p>
+                        <p><strong>Selected Plan:</strong> ${plan}</p>
+                        <p><strong>Expiry Date:</strong> ${data.expiry_date}</p>
+                        <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+                        <p style="color: #38bdf8; font-weight: bold;">Thank you for joining GymPilot Cyber Fitness!</p>
+                    `;
+
+                    html2pdf().from(invoiceElement).save(`${name.replace(/\s+/g, '_')}_GymPilot_Invoice.pdf`);
+                    document.getElementById('registerForm').reset();
+                    fetchHeroStats();
+                } else {
+                    alert('❌ Error: ' + (data.message || 'Registration failed!'));
+                }
+            } catch (err) {
+                alert('❌ Backend Server is offline. Start server using "node backend/server.js"');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', fetchHeroStats);
+    </script>
+</body>
+</html>

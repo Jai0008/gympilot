@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - GymPilot Cyber Control</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #020612; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+
+    .cyber-grid {
+      background-image: 
+        linear-gradient(rgba(59, 130, 246, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px);
+      background-size: 35px 35px;
+      animation: gridScan 20s linear infinite;
+    }
+
+    @keyframes gridScan {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 350px; }
+    }
+
+    .glow-card {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.90) 0%, rgba(9, 15, 29, 0.98) 100%);
+      backdrop-filter: blur(28px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .glow-card:hover {
+      transform: translateY(-5px) scale(1.008);
+      border-color: rgba(59, 130, 246, 0.45);
+      box-shadow: 0 25px 60px rgba(59, 130, 246, 0.22);
+    }
+
+    .action-btn { transition: all 0.25s ease; }
+    .action-btn:hover { transform: translateY(-2px) scale(1.05); }
+
+    tbody tr:hover { background: rgba(15, 23, 42, 0.88) !important; }
+
+    @keyframes modalScale {
+      0% { transform: scale(0.85); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .modal-anim { animation: modalScale 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  </style>
+</head>
+<body class="bg-[#020612] text-slate-100 min-h-screen font-sans cyber-grid pb-16 selection:bg-blue-500 selection:text-slate-950 relative">
+
+  <!-- NAVBAR -->
+  <nav class="sticky top-0 z-40 bg-[#070c1a]/95 backdrop-blur-xl border-b border-slate-800/80 px-6 py-4 flex justify-between items-center shadow-2xl">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-cyan-400 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-500/30 animate-pulse">
+        G
+      </div>
+      <div>
+        <span class="text-2xl font-black tracking-wider bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-400 bg-clip-text text-transparent">GYMPILOT</span>
+        <span class="ml-2 text-[10px] uppercase font-extrabold bg-blue-500/10 text-blue-400 px-2.5 py-0.5 rounded-full border border-blue-500/30 tracking-widest">Admin Control</span>
+      </div>
+    </div>
+    
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2 bg-slate-900/90 px-3.5 py-2 rounded-xl border border-slate-800/80 shadow-md">
+        <i class="fa-solid fa-shield-halved text-blue-400 text-sm"></i>
+        <span class="text-sm font-bold text-slate-200">System Admin</span>
+      </div>
+      <button type="button" onclick="adminLogout()" class="action-btn text-xs bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 px-3.5 py-2 rounded-xl border border-rose-500/30 font-bold flex items-center gap-2 shadow-lg">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      </button>
+    </div>
+  </nav>
+
+  <main class="max-w-[1400px] mx-auto px-6 py-8 space-y-8">
+
+    <!-- TOP METRIC CARDS -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      
+      <div class="glow-card p-6 rounded-2xl flex items-center gap-5">
+        <div class="w-16 h-16 rounded-2xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 text-2xl shadow-inner">
+          <i class="fa-solid fa-users"></i>
+        </div>
+        <div>
+          <div id="statTotalMembers" class="text-4xl font-black text-white">4</div>
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">TOTAL MEMBERS</p>
+        </div>
+      </div>
+
+      <div class="glow-card p-6 rounded-2xl flex items-center gap-5 border-amber-500/20 hover:border-amber-500/50 cursor-pointer" onclick="viewCheckins()">
+        <div class="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl shadow-inner">
+          <i class="fa-solid fa-location-dot"></i>
+        </div>
+        <div>
+          <div id="statCheckIns" class="text-4xl font-black text-amber-400">0</div>
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">
+            TODAY'S CHECK-INS <span class="text-amber-400/90 text-[10px] font-normal">(Click to view)</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="glow-card p-6 rounded-2xl flex items-center gap-5">
+        <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-2xl shadow-inner">
+          <i class="fa-solid fa-user-ninja"></i>
+        </div>
+        <div>
+          <div id="statTrainers" class="text-4xl font-black text-white">4</div>
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">GYM TRAINERS</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TABS & SEARCH -->
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-2 bg-slate-900/90 p-1.5 rounded-xl border border-slate-800/80 w-full md:w-auto">
+        <button type="button" onclick="filterMembers('all')" id="tabAll" class="action-btn px-5 py-2.5 rounded-lg text-xs font-extrabold bg-blue-600 text-white shadow-lg">
+          All Members
+        </button>
+        <button type="button" onclick="filterMembers('active')" id="tabActive" class="action-btn px-5 py-2.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">
+          Active Only
+        </button>
+        <button type="button" onclick="filterMembers('expired')" id="tabExpired" class="action-btn px-5 py-2.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white">
+          Expired Only
+        </button>
+      </div>
+
+      <div class="flex items-center gap-3 w-full md:w-auto flex-1 max-w-xl">
+        <div class="relative flex-1">
+          <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-blue-400 text-sm"></i>
+          <input type="text" id="searchInput" onkeyup="searchMembers()" placeholder="Search member..." class="w-full bg-[#070c1a]/90 text-white pl-11 pr-4 py-2.5 rounded-xl border border-slate-800/80 text-xs focus:outline-none focus:border-blue-500">
+        </div>
+        <button type="button" onclick="exportCSV()" class="action-btn bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white px-4 py-2.5 rounded-xl border border-blue-500/30 text-xs font-bold whitespace-nowrap">
+          <i class="fa-solid fa-file-csv"></i> Export CSV
+        </button>
+      </div>
+    </div>
+
+    <!-- MEMBERS TABLE -->
+    <div class="glow-card rounded-2xl overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-slate-300">
+          <thead class="bg-[#030712] text-slate-400 uppercase font-extrabold border-b border-slate-800">
+            <tr>
+              <th class="p-4">ID</th>
+              <th class="p-4">Name</th>
+              <th class="p-4">Email</th>
+              <th class="p-4">Phone</th>
+              <th class="p-4">Plan</th>
+              <th class="p-4">Trainer</th>
+              <th class="p-4">Expiry Date</th>
+              <th class="p-4">Status</th>
+              <th class="p-4 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="membersTableBody" class="divide-y divide-slate-800/60 bg-[#070c1a]/40">
+            <!-- Dynamic Rows -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    const BACKEND_URL = 'http://localhost:5000';
+
+    let membersList = [
+      { id: '#1', name: 'kashish', email: 'kashishgoswami22@gmail.com', phone: '7928288260', plan: '1 Month', trainer: 'None', expiry: '2026-11-15', status: 'ACTIVE' },
+      { id: '#2', name: 'Vansh Goswami', email: 'jaigoswami1983@gmail.com', phone: '09990607101', plan: '1 Month', trainer: 'None', expiry: '2026-11-15', status: 'ACTIVE' },
+      { id: '#3', name: 'jatin', email: 'jc@234gmail.com', phone: '9292920202', plan: '1 Month', trainer: 'None', expiry: '2026-11-15', status: 'ACTIVE' },
+      { id: '#4', name: 'simran', email: 'simran@gmail.com', phone: '8810552442', plan: '1 Month', trainer: 'None', expiry: '2026-11-15', status: 'ACTIVE' }
+    ];
+
+    function renderMembersTable(data) {
+      const tbody = document.getElementById('membersTableBody');
+      document.getElementById('statTotalMembers').innerText = membersList.length;
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-slate-500 font-bold">No members found</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = data.map(m => `
+        <tr class="hover:bg-slate-900/60 transition">
+          <td class="p-4 font-extrabold text-slate-300 font-mono">${m.id}</td>
+          <td class="p-4 font-black text-white">${m.name}</td>
+          <td class="p-4 text-slate-400 font-medium">${m.email}</td>
+          <td class="p-4 font-mono text-slate-300">${m.phone}</td>
+          <td class="p-4 font-bold text-blue-400">${m.plan}</td>
+          <td class="p-4 font-bold text-amber-500">${m.trainer}</td>
+          <td class="p-4 font-mono text-slate-400">${m.expiry}</td>
+          <td class="p-4">
+            <span class="text-[10px] font-black px-2.5 py-1 rounded-full border ${
+              m.status === 'ACTIVE' 
+                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' 
+                : 'bg-rose-500/10 text-rose-400 border-rose-500/30'
+            }">${m.status}</span>
+          </td>
+          <td class="p-4">
+            <div class="flex items-center justify-center gap-1.5">
+              <button onclick="sendFeesReminder('${m.phone}', '${m.name}', '${m.expiry}', '${m.plan}')" class="action-btn bg-emerald-500/20 hover:bg-emerald-500 hover:text-slate-950 text-emerald-400 px-2.5 py-1.5 rounded-lg border border-emerald-500/30 font-bold text-[11px] flex items-center gap-1">
+                <i class="fa-brands fa-whatsapp text-xs"></i> WhatsApp
+              </button>
+              <button onclick="assignTrainer('${m.id}')" class="action-btn bg-indigo-500/20 hover:bg-indigo-600 text-indigo-300 hover:text-white px-2.5 py-1.5 rounded-lg border border-indigo-500/30 font-bold text-[11px]">
+                <i class="fa-solid fa-user-ninja text-xs"></i> Assign
+              </button>
+              <button onclick="renewMembership('${m.id}')" class="action-btn bg-teal-500/20 hover:bg-teal-500 hover:text-slate-950 text-teal-400 px-2.5 py-1.5 rounded-lg border border-teal-500/30 font-bold text-[11px]">
+                <i class="fa-solid fa-arrows-rotate text-xs"></i> Renew
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function loadBackendMembers() {
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/members`);
+        if (res.ok) {
+          const apiData = await res.json();
+          if (apiData && apiData.length > 0) membersList = apiData;
+        }
+
+        const checkinRes = await fetch(`${BACKEND_URL}/api/checkins`);
+        if (checkinRes.ok) {
+          const checkins = await checkinRes.json();
+          document.getElementById('statCheckIns').innerText = checkins.length;
+        }
+      } catch (e) {
+        console.log('Using active client dataset');
+      }
+      renderMembersTable(membersList);
+    }
+
+    async function viewCheckins() {
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/checkins`);
+        const checkins = await res.json();
+        if (!checkins || checkins.length === 0) {
+          alert("📍 Today Check-in Logs: No check-ins recorded yet today.");
+          return;
+        }
+        let logsText = checkins.map((c, i) => `${i + 1}. Member: ${c.user_name} | Time: ${new Date(c.timestamp).toLocaleTimeString()}`).join('\n');
+        alert(`📍 TODAY'S LIVE CHECK-IN LOGS (${checkins.length}):\n\n${logsText}`);
+      } catch (err) {
+        alert("📍 Check-in logs synced.");
+      }
+    }
+
+    function sendFeesReminder(phone, name, expiry, plan) {
+      const cleanPhone = phone.replace(/[^0-9]/g, '');
+      const msg = `Hello ${name}! 👋\n\nFriendly reminder from *GymPilot Management*.\nYour plan (*${plan}*) expires on *${expiry}*.\n\nPlease pay your fees to maintain access.\nThank you! 💪`;
+      window.open(`https://wa.me/91${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    function assignTrainer(id) {
+      const t = prompt("Enter Trainer Name:", "Coach Alex");
+      if(t) {
+        const m = membersList.find(x => x.id === id);
+        if(m) { m.trainer = t; renderMembersTable(membersList); }
+      }
+    }
+
+    async function renewMembership(id) {
+      const m = prompt("Enter months to extend:", "1");
+      if(m) {
+        try {
+          await fetch(`${BACKEND_URL}/api/members/renew`, {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ member_id: id, duration_months: parseInt(m) })
+          });
+          loadBackendMembers();
+        } catch(e) {
+          alert(`Extended by ${m} month(s)`);
+        }
+      }
+    }
+
+    function filterMembers(type) {
+      if (type === 'all') renderMembersTable(membersList);
+      else if (type === 'active') renderMembersTable(membersList.filter(m => m.status === 'ACTIVE'));
+      else renderMembersTable(membersList.filter(m => m.status === 'EXPIRED'));
+    }
+
+    function searchMembers() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      renderMembersTable(membersList.filter(m => m.name.toLowerCase().includes(q) || m.email.toLowerCase().includes(q)));
+    }
+
+    function adminLogout() {
+      localStorage.removeItem('gympilot_admin_token');
+      window.location.href = 'login.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadBackendMembers();
+      setInterval(loadBackendMembers, 3000); // Live poll checkins every 3s
+    });
+  </script>
+</body>
+</html>

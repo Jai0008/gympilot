@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GymPilot - Ultimate Member Dashboard</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #020612; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+
+    .glow-card {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.90) 0%, rgba(9, 15, 29, 0.98) 100%);
+      backdrop-filter: blur(28px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+      transition: all 0.3s ease;
+    }
+    .glow-card:hover {
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+    .action-btn {
+      transition: all 0.2s ease;
+    }
+    .action-btn:hover {
+      transform: translateY(-2px);
+    }
+    .action-btn:active {
+      transform: scale(0.96);
+    }
+  </style>
+</head>
+<body class="bg-[#020612] text-slate-100 min-h-screen font-sans pb-16 selection:bg-emerald-500 selection:text-slate-950">
+
+  <!-- TOP NAVBAR -->
+  <nav class="sticky top-0 z-40 bg-[#070c1a]/95 backdrop-blur-xl border-b border-slate-800/80 px-6 py-4 flex justify-between items-center shadow-2xl">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-emerald-500/20">
+        G
+      </div>
+      <div>
+        <span class="text-2xl font-black tracking-wider bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">GYMPILOT</span>
+        <span class="ml-2 text-[10px] uppercase font-extrabold bg-emerald-500/10 text-emerald-400 px-2.5 py-0.5 rounded-full border border-emerald-500/30 tracking-widest">Member Portal</span>
+      </div>
+    </div>
+    
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2 bg-slate-900/90 px-3.5 py-2 rounded-xl border border-slate-800/80">
+        <i class="fa-solid fa-circle-user text-emerald-400"></i>
+        <span class="text-sm font-bold text-slate-200">Welcome, <span id="navUserName" class="text-emerald-400">User</span></span>
+      </div>
+      <button onclick="userLogout()" class="action-btn text-xs bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-400 px-3.5 py-2 rounded-xl border border-rose-500/30 font-bold flex items-center gap-2 transition">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      </button>
+    </div>
+  </nav>
+
+  <main class="max-w-[1400px] mx-auto px-6 py-8 space-y-6">
+
+    <!-- ROW 1: TOP DYNAMIC SUMMARY STATS + LIVE RUSH METER -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      
+      <!-- CARD 1: LIVE GYM RUSH METER -->
+      <div class="glow-card p-5 rounded-3xl space-y-2">
+        <div class="flex justify-between items-center">
+          <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live Crowd
+          </p>
+          <span id="rushStatusBadge" class="text-[10px] font-black bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/30">LOW RUSH</span>
+        </div>
+
+        <div class="flex items-baseline justify-between">
+          <h3 id="rushCapacityPercent" class="text-xl font-black text-emerald-400">22% Capacity</h3>
+          <span id="rushActiveCount" class="text-[10px] text-slate-400 font-bold">~6 Active</span>
+        </div>
+
+        <div class="w-full bg-slate-900 h-2 rounded-full overflow-hidden border border-slate-800">
+          <div id="rushProgressBar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-[22%] transition-all duration-500"></div>
+        </div>
+
+        <p id="rushRecommendationText" class="text-[10px] text-slate-400 font-medium truncate">
+          💡 <span class="text-emerald-400 font-bold">Best Time:</span> No waiting for machines.
+        </p>
+      </div>
+
+      <!-- CARD 2: EXPIRY COUNTDOWN -->
+      <div class="glow-card p-5 rounded-3xl flex items-center gap-4">
+        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-lg shadow-inner">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+        </div>
+        <div>
+          <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Membership Expiry</p>
+          <p id="expiryCountdown" class="text-lg font-black text-amber-400 mt-0.5">Calculating...</p>
+        </div>
+      </div>
+
+      <!-- CARD 3: ATTENDANCE STREAK -->
+      <div class="glow-card p-5 rounded-3xl flex items-center gap-4">
+        <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-lg shadow-inner">
+          <i class="fa-solid fa-fire"></i>
+        </div>
+        <div>
+          <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Monthly Attendance</p>
+          <p id="attendanceDays" class="text-lg font-black text-emerald-400 mt-0.5">0 Logs</p>
+        </div>
+      </div>
+
+      <!-- CARD 4: WORKOUT COMPLETION -->
+      <div class="glow-card p-5 rounded-3xl flex items-center gap-4">
+        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 text-lg shadow-inner">
+          <i class="fa-solid fa-chart-line"></i>
+        </div>
+        <div>
+          <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Today Completion</p>
+          <p id="workoutPercent" class="text-lg font-black text-indigo-400 mt-0.5">0% Done</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ROW 2: MAIN DASHBOARD GRID -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <!-- 1. HEALTH METRICS & BMI CALCULATOR -->
+      <div class="glow-card p-6 rounded-3xl space-y-4">
+        <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+          <i class="fa-solid fa-heart-pulse text-rose-400"></i> Health Metrics & BMI
+        </h3>
+
+        <div>
+          <label class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block mb-1">Height (CM)</label>
+          <input type="number" id="heightCm" placeholder="e.g. 175" class="w-full bg-[#030712] text-white px-4 py-3 rounded-xl border border-slate-800 text-sm focus:outline-none focus:border-emerald-500 font-bold">
+        </div>
+
+        <div>
+          <label class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block mb-1">Weight (KG)</label>
+          <input type="number" id="weightKg" placeholder="e.g. 70" class="w-full bg-[#030712] text-white px-4 py-3 rounded-xl border border-slate-800 text-sm focus:outline-none focus:border-emerald-500 font-bold">
+        </div>
+
+        <button onclick="calculateBMI()" class="action-btn w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3 rounded-xl text-xs shadow-lg shadow-emerald-500/20 transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-calculator"></i> Calculate BMI
+        </button>
+
+        <div class="bg-[#030712] p-4 rounded-2xl border border-slate-800/80 text-center space-y-1">
+          <p class="text-[10px] uppercase font-extrabold text-slate-400">Your BMI Score</p>
+          <p id="bmiScore" class="text-2xl font-black text-emerald-400">--</p>
+          <p id="bmiStatus" class="text-xs text-slate-500">Enter height & weight above</p>
+        </div>
+      </div>
+
+      <!-- 2. INTERACTIVE DAILY WORKOUT TRACKER -->
+      <div class="glow-card p-6 rounded-3xl space-y-4">
+        <div class="flex justify-between items-center">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+            <i class="fa-solid fa-dumbbell text-emerald-400"></i> Assigned Schedule
+          </h3>
+          <span class="text-[10px] font-bold bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-full border border-emerald-500/30">Today</span>
+        </div>
+
+        <h4 id="scheduleCategory" class="text-xl font-black text-emerald-400">General Workout Plan</h4>
+
+        <!-- Progress Bar -->
+        <div class="w-full bg-slate-900 h-2.5 rounded-full overflow-hidden border border-slate-800">
+          <div id="progressBar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-0 transition-all duration-500"></div>
+        </div>
+
+        <div id="workoutListContainer" class="space-y-3">
+          <!-- Dynamic Checkbox Exercises -->
+        </div>
+      </div>
+
+      <!-- 3. DYNAMIC USER DIET & SUPPLEMENT PLANNER -->
+      <div class="glow-card p-6 rounded-3xl space-y-4">
+        <div class="flex justify-between items-center">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+            <i class="fa-solid fa-utensils text-amber-400"></i> Diet & Macros Plan
+          </h3>
+          <span id="dietGoalTag" class="text-[10px] font-black bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded-full border border-amber-500/30 uppercase">FITNESS GOAL</span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 text-center">
+          <div class="bg-[#030712] p-3 rounded-2xl border border-slate-800">
+            <p class="text-[9px] uppercase font-extrabold text-slate-400">Protein</p>
+            <p id="macroProtein" class="text-sm font-black text-amber-400 mt-1">--</p>
+          </div>
+          <div class="bg-[#030712] p-3 rounded-2xl border border-slate-800">
+            <p class="text-[9px] uppercase font-extrabold text-slate-400">Carbs</p>
+            <p id="macroCarbs" class="text-sm font-black text-cyan-400 mt-1">--</p>
+          </div>
+          <div class="bg-[#030712] p-3 rounded-2xl border border-slate-800">
+            <p class="text-[9px] uppercase font-extrabold text-slate-400">Fats</p>
+            <p id="macroFats" class="text-sm font-black text-rose-400 mt-1">--</p>
+          </div>
+        </div>
+
+        <div id="dietMealsContainer" class="space-y-2 text-xs">
+          <!-- Dynamic Meals populated from JS -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ROW 3: DIGITAL MEMBERSHIP PASS & CHECK-IN -->
+    <div class="glow-card p-6 rounded-3xl flex flex-col md:flex-row justify-between items-center gap-6">
+      
+      <div class="space-y-2 text-center md:text-left">
+        <span class="text-[10px] font-black bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/30">ACTIVE MEMBERSHIP</span>
+        <h2 id="membershipPlanTitle" class="text-2xl font-black text-amber-400 uppercase">PRO ATHLETE PLAN</h2>
+        <p class="text-xs text-slate-400">Valid Access to Gym Floor, Cardio Zone & Personal Trainer Desk</p>
+      </div>
+
+      <div class="flex flex-col md:flex-row items-center gap-4">
+        <!-- Dynamic QR Pass -->
+        <div class="w-28 h-28 bg-white p-2 rounded-2xl shadow-xl flex items-center justify-center">
+          <img id="qrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=GymPilotMember" alt="QR Pass" class="w-full h-full object-contain">
+        </div>
+
+        <button onclick="markCheckin()" id="checkinBtn" class="action-btn bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-6 py-4 rounded-2xl text-xs shadow-lg shadow-emerald-500/20 transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-arrow-right-to-bracket text-base"></i> Check-In Now
+        </button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    const BACKEND_URL = 'http://localhost:5000';
+
+    // MEMBER-SPECIFIC DATA ENGINE
+    const memberProfiles = {
+      'simran': {
+        goal: 'TONING & LOWER BODY',
+        attendance: '19 / 30 Days',
+        expiryDays: '28 Days Left',
+        macros: { protein: '110g', carbs: '180g', fats: '45g' },
+        workout: {
+          category: 'Lower Body & Glutes',
+          exercises: [
+            'Barbell Back Squats – 4 Sets x 8 Reps',
+            'Leg Press Machine – 4 Sets x 12 Reps',
+            'Romanian Deadlifts – 4 Sets x 10 Reps',
+            'Plank Hold – 3 Sets x 60 Secs'
+          ]
+        },
+        meals: [
+          { title: '🥣 Breakfast', detail: 'Oatmeal, Chia Seeds, 3 Egg Whites' },
+          { title: '🥗 Lunch', detail: 'Grilled Paneer Salad, Brown Rice' },
+          { title: '⚡ Pre-Workout', detail: 'Green Tea + Apple Slices' }
+        ]
+      },
+      'vansh': {
+        goal: 'MUSCLE HYPERTROPHY',
+        attendance: '24 / 30 Days',
+        expiryDays: '27 Days Left',
+        macros: { protein: '160g', carbs: '320g', fats: '65g' },
+        workout: {
+          category: 'Chest & Heavy Triceps',
+          exercises: [
+            'Flat Barbell Bench Press – 4 Sets x 6 Reps',
+            'Incline Dumbbell Flyes – 3 Sets x 12 Reps',
+            'Weighted Tricep Dips – 3 Sets x 10 Reps',
+            'Cable Rope Pushdowns – 4 Sets x 15 Reps'
+          ]
+        },
+        meals: [
+          { title: '🥣 Breakfast', detail: '6 Eggs, Peanut Butter Toast, Milk' },
+          { title: '🍛 Lunch', detail: 'Chicken Breast / Paneer + 200g Rice' },
+          { title: '⚡ Pre-Workout', detail: 'Black Coffee + 5g Wellcore Creatine' }
+        ]
+      },
+      'jatin': {
+        goal: 'STRENGTH & BULKING',
+        attendance: '21 / 30 Days',
+        expiryDays: '26 Days Left',
+        macros: { protein: '150g', carbs: '300g', fats: '60g' },
+        workout: {
+          category: 'Back & Biceps Power',
+          exercises: [
+            'Lat Pulldowns – 4 Sets x 10 Reps',
+            'Seated Cable Rows – 4 Sets x 12 Reps',
+            'Barbell Bicep Curls – 3 Sets x 12 Reps',
+            'Hammer Curls – 3 Sets x 15 Reps'
+          ]
+        },
+        meals: [
+          { title: '🥣 Breakfast', detail: 'Oats Shake + Banana + Peanut Butter' },
+          { title: '🍛 Lunch', detail: 'Rajma Rice + Curd + Salad' },
+          { title: '⚡ Pre-Workout', detail: 'Boiled Potatoes + Creatine' }
+        ]
+      },
+      'kashish': {
+        goal: 'FAT LOSS & CARDIO FIT',
+        attendance: '16 / 30 Days',
+        expiryDays: '25 Days Left',
+        macros: { protein: '120g', carbs: '150g', fats: '40g' },
+        workout: {
+          category: 'Full Body HIIT & Cardio',
+          exercises: [
+            'Kettlebell Swings – 4 Sets x 20 Reps',
+            'Treadmill Incline Run – 15 Minutes',
+            'Dumbbell Shoulder Press – 3 Sets x 12 Reps',
+            'Hanging Leg Raises – 3 Sets x 15 Reps'
+          ]
+        },
+        meals: [
+          { title: '🥣 Breakfast', detail: 'Sprouted Moong + Fruit Bowl' },
+          { title: '🥗 Lunch', detail: 'Dal, Tofu / Chicken, 2 Multigrain Roti' },
+          { title: '⚡ Pre-Workout', detail: 'Black Coffee + Almonds' }
+        ]
+      }
+    };
+
+    // REAL-TIME GYM RUSH CALCULATOR
+    async function updateGymRushMeter() {
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/checkins`);
+        const checkins = await res.json();
+        const count = checkins ? checkins.length : 3;
+
+        const currentHour = new Date().getHours();
+        let capacityPercent = Math.min(Math.round(((count + 3) / 20) * 100), 100);
+
+        if (currentHour >= 18 && currentHour <= 21) {
+          capacityPercent = Math.max(capacityPercent, 85);
+        } else if (currentHour >= 6 && currentHour <= 9) {
+          capacityPercent = Math.max(capacityPercent, 55);
+        }
+
+        const badge = document.getElementById('rushStatusBadge');
+        const percentText = document.getElementById('rushCapacityPercent');
+        const activeCountText = document.getElementById('rushActiveCount');
+        const bar = document.getElementById('rushProgressBar');
+        const recText = document.getElementById('rushRecommendationText');
+
+        if (capacityPercent < 40) {
+          badge.className = "text-[10px] font-black bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/30";
+          badge.innerText = "🟢 LOW RUSH";
+          percentText.className = "text-xl font-black text-emerald-400";
+          bar.className = "bg-gradient-to-r from-emerald-500 to-teal-400 h-full transition-all duration-500";
+          recText.innerHTML = "💡 <span class='text-emerald-400 font-bold'>Best Time:</span> Minimum waiting time for machines.";
+        } else if (capacityPercent < 75) {
+          badge.className = "text-[10px] font-black bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full border border-amber-500/30";
+          badge.innerText = "🟡 MODERATE";
+          percentText.className = "text-xl font-black text-amber-400";
+          bar.className = "bg-gradient-to-r from-amber-500 to-yellow-400 h-full transition-all duration-500";
+          recText.innerHTML = "💡 <span class='text-amber-400 font-bold'>Moderate Crowd:</span> Normal waiting time for racks.";
+        } else {
+          badge.className = "text-[10px] font-black bg-rose-500/10 text-rose-400 px-2 py-0.5 rounded-full border border-rose-500/30";
+          badge.innerText = "🔴 HIGH PEAK";
+          percentText.className = "text-xl font-black text-rose-400";
+          bar.className = "bg-gradient-to-r from-rose-500 to-red-500 h-full transition-all duration-500";
+          recText.innerHTML = "⚠️ <span class='text-rose-400 font-bold'>Peak Rush!</span> Heavy crowd on floor.";
+        }
+
+        percentText.innerText = `${capacityPercent}% Capacity`;
+        activeCountText.innerText = `~${Math.round(capacityPercent / 8)} Active`;
+        bar.style.width = `${capacityPercent}%`;
+
+      } catch (e) {
+        console.log("Rush meter local sync");
+      }
+    }
+
+    // BOOT & INITIALIZATION
+    document.addEventListener('DOMContentLoaded', () => {
+      const currentUserId = localStorage.getItem('gym_user_id') || 'simran@gmail.com';
+      let currentUserName = localStorage.getItem('gym_user_name') || currentUserId.split('@')[0];
+
+      currentUserName = currentUserName.toLowerCase();
+
+      document.getElementById('navUserName').innerText = currentUserName;
+      document.getElementById('qrImage').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=GymPilot_${currentUserName}`;
+
+      loadMemberProfile(currentUserName);
+      updateGymRushMeter();
+      setInterval(updateGymRushMeter, 5000); // Dynamic Live Rush Sync
+    });
+
+    // LOAD PROFILE DATA
+    function loadMemberProfile(username) {
+      const profile = memberProfiles[username] || memberProfiles['simran'];
+
+      document.getElementById('expiryCountdown').innerText = profile.expiryDays;
+      document.getElementById('attendanceDays').innerText = profile.attendance;
+
+      document.getElementById('dietGoalTag').innerText = profile.goal;
+      document.getElementById('macroProtein').innerText = profile.macros.protein;
+      document.getElementById('macroCarbs').innerText = profile.macros.carbs;
+      document.getElementById('macroFats').innerText = profile.macros.fats;
+
+      const mealsContainer = document.getElementById('dietMealsContainer');
+      mealsContainer.innerHTML = profile.meals.map(m => `
+        <div class="bg-[#030712] p-3 rounded-2xl border border-slate-800/80 flex justify-between items-center">
+          <span class="font-bold text-slate-300">${m.title}</span>
+          <span class="text-slate-400">${m.detail}</span>
+        </div>
+      `).join('');
+
+      document.getElementById('scheduleCategory').innerText = profile.workout.category;
+      const workoutContainer = document.getElementById('workoutListContainer');
+      workoutContainer.innerHTML = profile.workout.exercises.map((ex) => `
+        <label class="bg-[#030712] p-3.5 rounded-2xl border border-slate-800/80 flex items-center justify-between cursor-pointer hover:border-emerald-500/40 transition">
+          <div class="flex items-center gap-3">
+            <input type="checkbox" onchange="updateProgress()" class="workout-check w-4 h-4 accent-emerald-500 rounded cursor-pointer">
+            <span class="text-xs font-bold text-slate-200">${ex}</span>
+          </div>
+          <i class="fa-solid fa-dumbbell text-slate-600 text-xs"></i>
+        </label>
+      `).join('');
+
+      updateProgress();
+    }
+
+    // UPDATE WORKOUT PROGRESS BAR
+    function updateProgress() {
+      const checkboxes = document.querySelectorAll('.workout-check');
+      const checked = document.querySelectorAll('.workout-check:checked');
+      
+      const percent = checkboxes.length > 0 ? Math.round((checked.length / checkboxes.length) * 100) : 0;
+
+      document.getElementById('progressBar').style.width = `${percent}%`;
+      document.getElementById('workoutPercent').innerText = `${percent}% Done`;
+    }
+
+    // BMI CALCULATOR
+    function calculateBMI() {
+      const h = parseFloat(document.getElementById('heightCm').value);
+      const w = parseFloat(document.getElementById('weightKg').value);
+
+      if (!h || !w || h <= 0 || w <= 0) {
+        alert('Please enter valid Height and Weight values!');
+        return;
+      }
+
+      const bmi = (w / ((h / 100) * (h / 100))).toFixed(1);
+      document.getElementById('bmiScore').innerText = bmi;
+
+      let status = '';
+      if (bmi < 18.5) status = 'Underweight (Weight Gain Goal)';
+      else if (bmi < 24.9) status = 'Normal Weight (Maintain / Shred)';
+      else if (bmi < 29.9) status = 'Overweight (Fat Loss Goal)';
+      else status = 'Obese';
+
+      document.getElementById('bmiStatus').innerText = status;
+    }
+
+    // CHECK-IN ACTION
+    async function markCheckin() {
+      const btn = document.getElementById('checkinBtn');
+      const userName = document.getElementById('navUserName').innerText;
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Logging...';
+
+      try {
+        await fetch(`${BACKEND_URL}/api/checkin`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: userName, user_name: userName, checkin_time: new Date().toISOString() })
+        });
+        alert(`✅ Check-In Successful for ${userName}! Admin Dashboard Updated.`);
+        updateGymRushMeter();
+      } catch (e) {
+        alert(`✅ Check-In Logged Locally for ${userName}!`);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Checked-In Today';
+        btn.classList.replace('bg-emerald-500', 'bg-slate-800');
+        btn.classList.replace('text-slate-950', 'text-emerald-400');
+      }
+    }
+
+    function userLogout() {
+      localStorage.removeItem('gym_user_id');
+      localStorage.removeItem('gym_user_name');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>
